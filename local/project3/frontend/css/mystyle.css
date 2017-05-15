@@ -1,0 +1,28 @@
+#graphTitle {
+  font-weight: 800;
+  padding-top: 5px;
+}
+
+#graphNote {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 18px;
+}
+
+#tree_area {
+  margin-top: 30px;
+}
+
+#tree_area svg {
+  /*overflow: visible;*/
+  height: 10000px;
+}
+
+#sliders {
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+svg.d3-slider-axis.d3-slider-axis-bottom {
+  height: 30px;
+}

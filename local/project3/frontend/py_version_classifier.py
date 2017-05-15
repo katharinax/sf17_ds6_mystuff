@@ -8,71 +8,54 @@ import pickle
 import flask
 import json
 
-with open("model.pkl", 'rb') as picklefile: 
-    rf = pickle.load(picklefile)
-    tree_lists = pickle.load(picklefile)
+def tree_to_li(one_tree, featname_li, parent_index = None, direction = None):
+    node = {}
+    if direction == "l":
+        node['name'] = int(one_tree.children_left[parent_index])
+    elif direction == "r":
+        node['name'] = int(one_tree.children_right[parent_index])
+    else:
+        node['name'] = 0
+    n = int(one_tree.n_node_samples[node['name']])
+    if one_tree.children_left[node['name']] != -1:
+        feat_label = featname_li[one_tree.feature[node['name']]]
+        thres = one_tree.threshold[node['name']]
+        node['feat'] = feat_label + r" <= " + str(thres) + r" (n = " + str(n) + r")"
+        node['children'] = [tree_to_li(one_tree, featname_li, node['name'], 'l'),
+                            tree_to_li(one_tree, featname_li, node['name'], 'r')]
+    else:
+        node['feat'] = r"(n = " + str(n) + r")"
+    return node
 
-# Train a model at the beginning; this guy will stay in memory the whole
-# time our server is up!
+# import pickled data
+with open('../backend/data_for_viz.pkl', 'rb') as picklefile:
+    X = pickle.load(picklefile)
+    y = pickle.load(picklefile)
+    X_cols_label = pickle.load(picklefile)
 
-# The example training data has a single feature and for all training X
-# values from 1 to 500 the true response is 0; for all X values from 500
-# to 1000 the true response is 1. Pretty simple decision boundary here,
-# the model is if you encounter x < 500, classify as 0, if 500 < x,
-# classify as 1.
-
-# You could also load a pickled model rather than training on server
-# launch, which would be more typical.
-
-X = np.linspace(1, 1000, 50).reshape(-1,1)
-Y = np.zeros(50,)
-Y[25:] = np.ones(25,)
-PREDICTOR = LogisticRegression().fit(X,Y)
-
+rf = RandomForestClassifier()
 
 # Initialize the app
-
 app = flask.Flask(__name__)
 
-
-# An example of routing:
-# If they go to the page "/" (this means a GET request
-# to the page http://127.0.0.1:5000/), return a simple
-# page that says the site is up!
-
+# GET request to the page http://127.0.0.1:5000/
 @app.route("/")
 def hello():
     return "It's alive!!!"
 
-
-# Let's turn this into an API where you can post input data and get
-# back output data after some calculations.
-
-# If a user makes a POST request to http://127.0.0.1:5000/predict, and
-# sends an X vector (to predict a class y_pred) with it as its data,
-# we will use our trained LogisticRegression model to make a
-# prediction and send back another JSON with the answer. You can use
-# this to make interactive visualizations.
-
-@app.route("/predict", methods=["POST"])
-def predict():
+# POST request
+@app.route("/draw_tree", methods=["GET", "POST"])
+def drawTree():
 
     # read the data that came with the POST request as a dict
-    data = flask.request.json
+    json_dict = flask.request.json
+    which_tree = json_dict['treeparams'][0]
 
-    # let's convert this into a numpy array so that we can
-    # stick it into our model
-    x = np.array(data["example"]).reshape(-1,1)
+    # train model
+    rf.fit(X, y)
 
-    # Classify!
-    y_pred = PREDICTOR.predict(x)
-
-    # Turn the result into a simple list so we can put it in
-    # a json (json won't understand numpy arrays)
-    y_pred = list(y_pred)
-
-    # Put the result in a nice dict so we can send it as json
-    results = {"predicted": y_pred}
+    #produce tree json
+    results = tree_to_li(rf[which_tree].tree_, X_cols_label)
 
     # Return a response with a json in it
     # flask has a quick function for that that takes a dict
