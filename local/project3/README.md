@@ -1,6 +1,6 @@
 Hi guys,
 
-I got some requests to share my source code for visualizing the random forest trees, so here you go:) I added some descriptions below for you and for myself when I forget everything tomorrow.
+I got some requests to share my source code for visualizing the random forest trees, so here you go:) To see the HTML file directly, please go [here](frontend/app/templates/index.html). I added some descriptions below for you and for myself when I forget everything tomorrow.
 
 **Description**
 
@@ -10,7 +10,7 @@ What happens under the hood is that **run.py** starts by importing the entire **
 
 The **\_\_init\_\_.py** file is automatically run when imported, as a result, at this point, we have a Flask() object assigned to the name *application*. A few nano-seconds later, when the line *application.run()* is run, Python knows to run the function I defined right under this decorator: *@app.route("/")*. This function with decorator is rendering/showing my **app/templates/index.html** file. I wrote this function in **app/py_version_classifier.py**. The **app/py_version_classifier.py** file is imported when the **\_\_init\_\_.py** file was run;  any single Python script file - unlike a folder - can be imported as a module no problem if they are placed under the same folder.
 
-So far, I explained the Python flask codes which are based on Kyle's [iris app](https://github.com/thisismetis/sf17_ds6/tree/master/resources/flask/iris-app). 
+So far, I explained the Python flask codes which are based on Kyle's [iris app](https://github.com/thisismetis/sf17_ds6/tree/master/resources/flask/iris-app).
 
 The frontend tree codes are mostly in **app/templates/index.html**. They are based on Mike Bostock’s [collapsible indented tree](https://bl.ocks.org/mbostock/1093025) and the [d3 slider](http://thematicmapping.org/playground/d3/d3.slider/). I don't know much about these codes; one tip though, is that assigning different **#id**'s to the slider svg and the tree svg, respectively, was very helpful when it comes to costimizing one svg but not the other.
 
@@ -23,12 +23,12 @@ The AJAX POST request works like this:
 The live demo I showed yesterday is now on YouTube [here](https://www.youtube.com/watch?v=D8_yesxONsM).
 
 **Key files**  
-
-&ensp;&ensp;[McNulty_Huang20170517.pdf](McNulty_Huang20170517.pdf)  
+&ensp;&ensp;[frontend/app/templates/index.html](frontend/app/templates/index.html)   
 &ensp;&ensp;[frontend/run.py](frontend/run.py)  
 &ensp;&ensp;[frontend/app/py_version_classifier.py](frontend/app/py_version_classifier.py)  
 &ensp;&ensp;[frontend/models/model.ipynb](frontend/models/model.ipynb)  
 &ensp;&ensp;[frontend/models/clean.ipynb](frontend/models/clean.ipynb)  
 &ensp;&ensp;[frontend/models/clean2.ipynb](frontend/models/clean2.ipynb)  
+&ensp;&ensp;[McNulty_Huang20170517.pdf](McNulty_Huang20170517.pdf)
 
 Enjoy!
