@@ -34,12 +34,12 @@ import gc
 # In[4]:
 
 # settings
-st_page, end_page = 1, 10
+st_page, end_page = 11, 90
 port_num = 27017
 del_all_result = False
 genre = r"alternate-history"
 api_key = "fqX09wQYnt4aDOJxQoRtkQ"
-delay = 5
+delay = 0.5
 ua = UserAgent()
 log_fn = r"goodreads_data" + str(st_page) + r"_" + str(end_page) + r".log"
 logging.basicConfig(filename = log_fn, level = logging.INFO, format = "%(asctime)s %(levelname)s %(message)s")
@@ -62,9 +62,10 @@ def get_bookids(st_page, end_page):
             for link in book_links:
                 bookid = re.sub("\/book\/show\/(?P<bookid>[0-9]+).*", "\g<bookid>", link["href"])
                 book_li += [bookid]
-            time.sleep(10 * np.random.rand())
+            time.sleep(delay + 2 * np.random.rand())
         return book_li
-    except:
+    except Exception as e:
+        logging.info("get_bookids() exception: " + str(e))
         pass
 
 
@@ -88,6 +89,7 @@ def scrape_to_mongo(bookid):
         n_ratings = soup.find("ratings_count").text
         avg_rating = soup.find("average_rating").text
 
+        logging.info("Starting to insert into bookColl")
         bookColl.insert_one({"bookid": bookid,
                              "title": one_title,
                              "author": one_author,
@@ -99,6 +101,7 @@ def scrape_to_mongo(bookid):
                              "avg_rating": avg_rating,
                              "desc": one_book_desc
                             })
+        logging.info("Finished inserting into bookColl")
 
         iframe = soup.find("iframe")
         url = re.sub(r"DEVELOPER_ID", api_key, iframe['src']) # url to first page of reviews
@@ -118,6 +121,10 @@ def scrape_to_mongo(bookid):
             soup = BeautifulSoup(page.text, 'lxml')
             all_review_links.extend(soup.find_all("link"))
 
+        logging.info("Got all_review_links")
+        all_review_links = list(set(all_review_links))
+        logging.info("Dedupped all_review_links")
+
         # get reviews
         for link in all_review_links:
             url = link["href"]
@@ -132,23 +139,30 @@ def scrape_to_mongo(bookid):
                 one_like_ct = re.sub("[^0-9]*", "", soup.find("span", {"class": "likesCount"}).text)
                 one_rating = soup.find("div", {"class", "rating"}).find("span", {"class", "value-title"})["title"]
 
+                logging.info("Starting to insert into reviewColl")
                 reviewColl.insert_one({"bookid": bookid,
                                        "userid": one_userid,
                                        "rating": one_rating,
                                        "review_yr": one_review_yr,
                                        "like_ct": one_like_ct,
                                        "review": one_review})
+                logging.info("Finished inserting into reviewColl")
         gc.collect()
         time.sleep(delay + 2 * np.random.rand())
-    except:
+    except Exception as e:
+        logging.info("scrape_to_mongo() exception: " + str(e))
         pass
 
 
 # In[7]:
 
 mongoClient = MongoClient(port = port_num)
+bookiddb = mongoClient.bookiddb
+bookidColl = bookiddb.bookidColl
+
 bookdb = mongoClient.bookdb
 bookColl = bookdb.bookColl
+
 reviewdb = mongoClient.reviewdb
 reviewColl = reviewdb.reviewColl
 
@@ -156,6 +170,7 @@ reviewColl = reviewdb.reviewColl
 # In[8]:
 
 if del_all_result:
+    del_result = bookidColl.delete_many({})
     del_result = bookColl.delete_many({})
     del_result = reviewColl.delete_many({})
 
@@ -164,13 +179,21 @@ if del_all_result:
 
 book_li = get_bookids(st_page, end_page)
 logging.info("Got all bookids")
+book_li = list(set(book_li))
+logging.info("Dedupped bookids")
+
+logging.info("Starting to insert into bookidColl")
+bookidColl.insert_one({"st_page": st_page,
+                       "end_page": end_page,
+                       "book_li": book_li})
+logging.info("Finished inserting into bookidColl")
 
 
 # In[10]:
 
 for bookid in book_li:
     scrape_to_mongo(bookid)
-logging.info("Inserted to mongo")
+logging.info("All inserted to mongo. Script complete.")
 
 
 # In[ ]:
