@@ -34,13 +34,23 @@ import gc
 # In[4]:
 
 # settings
-st_page, end_page = 11, 90
+st_page, end_page = 1, 90
 port_num = 27017
 del_all_result = False
 genre = r"alternate-history"
 api_key = "fqX09wQYnt4aDOJxQoRtkQ"
 delay = 0.5
-ua = UserAgent()
+# ua = UserAgent()
+cook = {
+        'Host': 'www.goodreads.com',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, sdch, br',
+        'Accept-Language': 'en-US,en;q=0.8,zh-TW;q=0.6,zh;q=0.4',
+        'Cookie': 'csid=BAhJIhg0MjQtOTQxNDM0My04MTQ3MTU5BjoGRVQ%3D--3769321063104d2fdca8460feb1d6bc3ccf37973; locale=en; csm-sid=654-1843675-5161952; u=LNqZ0RiQEdr8wQDbVI-0pFIBJyV-d6x0bFoID-Zv1lYNS4LK; p=FWSM7ysoJqrQRyJKlPMebjpUWZgP0mmSiQFa4lIefiy5mWRs; _session_id2=95a8c537cdfc330d0d67489207d2fb4e',
+        'If-None-Match': 'W/"656e01f96c055e677f1eb0f548dc54d4"'}
 log_fn = r"goodreads_data" + str(st_page) + r"_" + str(end_page) + r".log"
 logging.basicConfig(filename = log_fn, level = logging.INFO, format = "%(asctime)s %(levelname)s %(message)s")
 logging.info("settings" + " port_num " + str(port_num) + " st_page " + str(st_page) +  " end_page " + str(end_page) + " del_all_result " + str(del_all_result))
@@ -53,9 +63,9 @@ def get_bookids(st_page, end_page):
         book_li = []
         for current_page in range(st_page, end_page + 1):
             logging.info("current_page " + str(current_page))
-            user_agent = {'User-agent': ua.random}
+            # user_agent = {'User-agent': ua.random}
             url = r"https://www.goodreads.com/shelf/show/" + genre + r"?page=" + str(current_page)
-            page = requests.get(url, headers = user_agent)
+            page = requests.get(url, headers = cook)
             soup = BeautifulSoup(page.text, 'lxml')
 
             book_links = soup.find_all("a", {"class", "bookTitle"})
@@ -75,9 +85,9 @@ def scrape_to_mongo(bookid):
     logging.info("\n==bookid " + str(bookid) + "==\n")
     try:
         # scrape one book
-        user_agent = {'User-agent': ua.random}
+        # user_agent = {'User-agent': ua.random}
         url = r"https://www.goodreads.com/book/show.xml?key=" + api_key + r"&id=" + str(bookid)
-        page = requests.get(url, headers = user_agent)
+        page = requests.get(url, headers = cook)
         soup = BeautifulSoup(page.text, 'lxml')
         one_book_desc = soup.find("description").text
         one_title = soup.find("h1").text
@@ -105,7 +115,7 @@ def scrape_to_mongo(bookid):
 
         iframe = soup.find("iframe")
         url = re.sub(r"DEVELOPER_ID", api_key, iframe['src']) # url to first page of reviews
-        page = requests.get(url, headers = user_agent)
+        page = requests.get(url, headers = cook)
         soup = BeautifulSoup(page.text, 'lxml')
 
         # get links to review pages
@@ -117,7 +127,7 @@ def scrape_to_mongo(bookid):
         for review_page in some_next_pages:
             part_url = review_page["href"]
             url = r"https://www.goodreads.com" + part_url
-            page = requests.get(url, headers = user_agent)
+            page = requests.get(url, headers = cook)
             soup = BeautifulSoup(page.text, 'lxml')
             all_review_links.extend(soup.find_all("link"))
 
@@ -130,7 +140,7 @@ def scrape_to_mongo(bookid):
             url = link["href"]
             if re.match("https:\/\/www\.goodreads\.com\/review\/show\/.*", url):
                 logging.info("beginning to get reviews for " + url)
-                page = requests.get(url, headers = user_agent)
+                page = requests.get(url, headers = cook)
                 soup = BeautifulSoup(page.text, 'lxml')
                 user_obj = soup.find("span", {"class": "reviewer"})
                 one_userid = re.sub(r"\/user\/show\/(?P<userid>[0-9]+)\-.*", r"\g<userid>", user_obj.find("a")["href"])
@@ -157,13 +167,13 @@ def scrape_to_mongo(bookid):
 # In[7]:
 
 mongoClient = MongoClient(port = port_num)
-bookiddb = mongoClient.bookiddb
+bookiddb = mongoClient.bookiddb2
 bookidColl = bookiddb.bookidColl
 
-bookdb = mongoClient.bookdb
+bookdb = mongoClient.bookdb2
 bookColl = bookdb.bookColl
 
-reviewdb = mongoClient.reviewdb
+reviewdb = mongoClient.reviewdb2
 reviewColl = reviewdb.reviewColl
 
 
