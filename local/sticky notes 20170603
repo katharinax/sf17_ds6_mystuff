@@ -1,0 +1,45 @@
+submit proj4
+
+Final Project:
+ideas-classify insect image w/ cnn then provide nlp summary and similar other bugs. Give viz thru flask.
+
+Career:
+Rewrite resume with Creddle.io (give Andrew log in)
+Skilled interview in wk10 (6/12-)
+Review Andrew resume/cover letter slides
+Target list of 10 pp/company
+	look for data scientists by city on LinkedIn
+	Filter company headquarter on Crunchbase
+	Check review on Glassdoor
+
+rnn (lstm) vs cnn
+
+OPTIONAL:
+	Catch up on deep learning AWS setup?
+	more blog
+	read gmplot on Slack by matt
+	read challenge 2 - math primer
+	read challenge 4 - probability
+	more on Udemy Python for DS & ML
+	http://algorithms-tour.stitchfix.com/#client-experience-part-1
+	learn PyCharm
+	populate the github blog About tab
+	learn HTML/CSS/JS https://dash.generalassemb.ly/
+	challenge 12 - d3
+	Rob Hyndman time series examples
+	finish challenge 14
+
+==
+
+Access AWS instance:
+ssh myaws
+ssh aws_shared
+
+Enter/Exit postgresql
+psql
+\q
+
+MongoDB password
+katharina or admin
+mongo0810
+Binding to Mac on port 12345
