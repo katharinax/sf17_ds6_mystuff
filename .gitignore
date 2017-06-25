@@ -2,4 +2,5 @@
 *.csv
 *.dat
 *.h5
+*.png
 .DS_Store
