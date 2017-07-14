@@ -6,5 +6,5 @@ Feel free to also take a look at [my presentation slide desk](./Hieroglyph_Huang
 
 Unfortunately the api result is currently hardcoded. The model itself works well locally, but the size is too large for it to be uploaded onto herokuapp.com where the api is served - even after pickling. I am all ears if there are any tips or tricks around this that you are willing to share!
 
-Cheers,
+Cheers,  
 Katie
