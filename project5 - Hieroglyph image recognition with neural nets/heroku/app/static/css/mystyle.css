@@ -1,0 +1,97 @@
+.h1, h1 {
+    font-size: 72px;
+    margin-top: 40px;
+    margin-bottom: 60px;
+}
+
+input {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 900;
+}
+
+.container {
+  margin: auto;
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.btn {
+  font-size: 32px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 250px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+
+h1 {
+  color: rgb(132, 112, 1);
+  font-family: 'Knewave', cursive;
+}
+
+#arrow {
+  font-size: 2em;
+  padding-left:20px;
+  padding-right:20px;
+  vertical-align: middle;
+}
+
+.fileinput-new {
+  vertical-align: middle;
+  font-size: 1.1em;
+}
+
+.fileinput-filename {
+  vertical-align: middle;
+  font-size: 1.1em;
+}
+
+#outside {
+  text-align: center;
+  background: linear-gradient(to right, rgba(255,255,255,0),
+    rgba(255,255,255,1)), url('../images/1200px-Karnak_titul_ramses_2c.jpg');
+}
+
+#below {
+  text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+}
+
+#mytable {
+  text-align: left;
+  vertical-align: middle;
+  font-size: 32px;
+  width: 70%;
+}
+
+#hasForm {
+  font-size: 32px;
+}
+
+#submit {
+  font-size: 32px;
+}
+
+#myimg {
+  text-align: center;
+}

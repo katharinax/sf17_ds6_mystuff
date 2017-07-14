@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/css/jasny-bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified jQuery and JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jasny-bootstrap/3.1.3/js/jasny-bootstrap.min.js"></script>
+
+<!-- My own css and js -->
+<link href="static/css/mystyle.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Knewave|Roboto" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container container-fluid" id="outside">
+    <div class="page"><h1>Egyptian Hieroglyph Lookup</h1></div>
+  </div>
+
+<br style="font-size:56px;">
+<div class="page" id="myimg"><img src={{imgpath}} alt="" style="width:200px;height:300px;"></div>
+<br style="font-size:56px;">
+
+<div class="container container-fluid" id="mytable">
+<table class="table table-striped table-responsive">
+  <tbody class="thead-default thead-inverse">
+    <tr>
+      <th scope="row">Gardiner Index</th>
+      <td>{{pred}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Transliteration</th>
+      <td>{{phonetic}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Translation</th>
+      <td>{{desc}}</td>
+    </tr>
+    <tr>
+      <th scope="row">Word Frequency</th>
+      <td>{{freq_cat}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>
